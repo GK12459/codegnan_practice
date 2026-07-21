@@ -1,12 +1,26 @@
 import os
-from openpyxl import Workbook
-from openpyxl import load_workbook
+from openpyxl import Workbook, load_workbook
 
-if(os.path.exists("Contacts.xlsx")):
-    workbook = load_workbook("Contacts.xlsx")
-    worksheet = workbook["Contacts"]
-else:
-    print("File not found!")
+def initialize_workbook():
+    if os.path.exists("Contacts.xlsx"):
+        workbook = load_workbook("Contacts.xlsx")
+        worksheet = workbook["Contacts"]
+    else:
+        workbook = Workbook()
+        worksheet = workbook.active
+        worksheet.title = "Contacts"
+
+        worksheet.cell(row=4, column=7).value = "Name"
+        worksheet.cell(row=4, column=10).value = "Mobile Number"
+
+        workbook.save("Contacts.xlsx")
+
+        print("Contacts.xlsx not found.")
+        print("New Contacts.xlsx file created successfully!\n")
+    
+    return workbook, worksheet
+
+workbook, worksheet = initialize_workbook()
 
 def search_logic(search_by = 0, search_value = 0):
 
@@ -148,9 +162,9 @@ while(True):
     print("="*50)
     try:
         operation = int(input("Enter your choice: "))
-    except:
+    except (ValueError):
         print("Choose valid option!")
-        break
+        continue
     
     match(operation):
         case 1:
